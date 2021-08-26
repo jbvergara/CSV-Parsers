@@ -1,9 +1,13 @@
 import csv
+import requests
 
-user_input = input("Please enter CSV filename: ")
-filename = user_input + '.csv'
+url = input("Please enter the URL of the CSV file: ")
+filename = url.split('/')[-1]
+filename = filename.split('.')[0]
+r = requests.get(url)
+open(filename, 'wb').write(r.content)
 
-with open(filename, 'r', newline='') as csv_file:
+with open(filename, 'r') as csv_file:
     row1 = csv.reader(csv_file)
     fieldnames = next(row1)
     table = csv.DictReader(csv_file, fieldnames = fieldnames)
@@ -15,7 +19,7 @@ with open(filename, 'r', newline='') as csv_file:
                 buff.append(row[field])
             listoflists.append(buff)
 
-with open(user_input + '_parsed.csv', 'w') as gen_csv:
+with open(filename + '_parsed.csv', 'w') as gen_csv:
     writer = csv.writer(gen_csv)
     writer.writerow(fieldnames)
     for item in listoflists:
